@@ -168,7 +168,7 @@ Read: [EF Core getting started](https://learn.microsoft.com/ef/core/get-started/
   ```
 - [x] **Read the generated migration file.** Check that `Status` is a `text`/`character varying(20)` column and `CreatedAt` is `timestamp with time zone`.
 - [x] Inspect the table: `docker compose exec postgres psql -U taskmanager -c '\d "Tasks"'`
-- [ ] Commit: `feat: add TaskItem entity, AppDbContext and initial migration`
+- [x] Commit: `feat: add TaskItem entity, AppDbContext and initial migration`
 
 <details><summary>Hint: DbContext constructor (primary constructor syntax, C# 12+)</summary>
 
@@ -203,10 +203,10 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 
 The .NET 10 template already generates an OpenAPI document (`AddOpenApi()` / `MapOpenApi()` → `/openapi/v1.json`). We add only the Swagger **UI** on top of it.
 
-- [ ] `dotnet add src/TaskManager.Api package Swashbuckle.AspNetCore.SwaggerUI`
-- [ ] In the `IsDevelopment()` block, after `MapOpenApi()`, add `UseSwaggerUI` pointing at `/openapi/v1.json`.
-- [ ] Make enums serialize as strings: chain `.AddJsonOptions(...)` onto `AddControllers()` and add a `JsonStringEnumConverter`.
-- [ ] Add `builder.Services.AddProblemDetails();`
+- [x] `dotnet add src/TaskManager.Api package Swashbuckle.AspNetCore.SwaggerUI`
+- [x] In the `IsDevelopment()` block, after `MapOpenApi()`, add `UseSwaggerUI` pointing at `/openapi/v1.json`.
+- [x] Make enums serialize as strings: chain `.AddJsonOptions(...)` onto `AddControllers()` and add a `JsonStringEnumConverter`.
+- [x] Add `builder.Services.AddProblemDetails();`
 - [ ] Optional: set `"launchUrl": "swagger"` in `launchSettings.json` so the browser opens Swagger automatically.
 - [ ] Run the app and open `/swagger`. It loads with no operations yet, which is expected.
 - [ ] Commit: `feat: add swagger ui, string enums and problem details`
@@ -228,23 +228,23 @@ app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Task Ma
 
 Read: [Integration tests in ASP.NET Core](https://learn.microsoft.com/aspnet/core/test/integration-tests), [Testcontainers PostgreSQL module](https://dotnet.testcontainers.org/modules/postgres/)
 
-- [ ] Add packages to the test project:
+- [x] Add packages to the test project:
   ```bash
   dotnet add tests/TaskManager.Api.Tests package Microsoft.AspNetCore.Mvc.Testing --version 10.0.15
   dotnet add tests/TaskManager.Api.Tests package Testcontainers.PostgreSql
   ```
-- [ ] `Infrastructure/TaskManagerApiFactory.cs`: a class that extends `WebApplicationFactory<Program>` and implements xUnit's `IAsyncLifetime`. It:
+- [x] `Infrastructure/TaskManagerApiFactory.cs`: a class that extends `WebApplicationFactory<Program>` and implements xUnit's `IAsyncLifetime`. It:
   - owns a `PostgreSqlContainer` (image `postgres:17-alpine`)
   - in `InitializeAsync`: starts the container, then creates a DI scope, gets `AppDbContext`, and runs `Database.MigrateAsync()`
   - in `ConfigureWebHost`: overrides `ConnectionStrings:Default` with the container's connection string
   - exposes `Task ResetDatabaseAsync()`, which deletes all rows from `Tasks`
   - in its dispose method: disposes the container and the factory
-- [ ] `Infrastructure/ApiCollection.cs`: a `[CollectionDefinition("Api")]` class implementing `ICollectionFixture<TaskManagerApiFactory>`.
-- [ ] `Infrastructure/TestJson.cs`: a static `JsonSerializerOptions` with web defaults plus `JsonStringEnumConverter`, so tests read and write JSON the same way the API does.
+- [x] `Infrastructure/ApiCollection.cs`: a `[CollectionDefinition("Api")]` class implementing `ICollectionFixture<TaskManagerApiFactory>`.
+- [x] `Infrastructure/TestJson.cs`: a static `JsonSerializerOptions` with web defaults plus `JsonStringEnumConverter`, so tests read and write JSON the same way the API does.
 - [ ] Write a smoke test, `Tasks/CreateAndGetTaskTests.cs`, in collection `"Api"`:
   - **Test `Database_is_reachable`:** get `AppDbContext` from a scope and assert `await db.Database.CanConnectAsync()` is `true`.
-- [ ] `dotnet test` passes. The first run pulls the Postgres image, so it's slow.
-- [ ] Commit: `test: add integration test infrastructure with testcontainers`
+- [x] `dotnet test` passes. The first run pulls the Postgres image, so it's slow.
+- [x] Commit: `test: add integration test infrastructure with testcontainers`
 
 <details><summary>Hint: "Program is inaccessible" error</summary>
 
@@ -308,23 +308,23 @@ Read: [Create web APIs with ASP.NET Core](https://learn.microsoft.com/aspnet/cor
 
 ### 6a: Write the failing tests (in `Tasks/CreateAndGetTaskTests.cs`)
 
-- [ ] **`Create_returns_201_with_location_and_body`:** POST `/api/tasks` with title `"Write tests"`, a description, and a due date in UTC. Assert status `201`; `response.Headers.Location` is not null; the body deserializes to `TaskResponse` with a non-empty `Id`, the same title, status `Pending`, and `CreatedAt == UpdatedAt`.
-- [ ] **`Create_without_title_returns_400`:** POST with an empty title. Assert `400`.
-- [ ] **`Create_with_title_over_200_chars_returns_400`:** use `new string('x', 201)`. Assert `400`.
-- [ ] **`Get_by_id_returns_the_created_task`:** create a task, then GET the `Location` URL. Assert `200` and the same `Id` and `Title`.
-- [ ] **`Get_unknown_id_returns_404`:** GET `/api/tasks/{Guid.NewGuid()}`. Assert `404`.
-- [ ] Run `dotnet test`. It fails to **compile** because the DTOs don't exist yet, which counts as your first "red". Create the four DTO records (spec → DTOs) with no logic, so the tests compile and then fail with 404s.
+- [x] **`Create_returns_201_with_location_and_body`:** POST `/api/tasks` with title `"Write tests"`, a description, and a due date in UTC. Assert status `201`; `response.Headers.Location` is not null; the body deserializes to `TaskResponse` with a non-empty `Id`, the same title, status `Pending`, and `CreatedAt == UpdatedAt`.
+- [x] **`Create_without_title_returns_400`:** POST with an empty title. Assert `400`.
+- [x] **`Create_with_title_over_200_chars_returns_400`:** use `new string('x', 201)`. Assert `400`.
+- [x] **`Get_by_id_returns_the_created_task`:** create a task, then GET the `Location` URL. Assert `200` and the same `Id` and `Title`.
+- [x] **`Get_unknown_id_returns_404`:** GET `/api/tasks/{Guid.NewGuid()}`. Assert `404`.
+- [x] Run `dotnet test`. It fails to **compile** because the DTOs don't exist yet, which counts as your first "red". Create the four DTO records (spec → DTOs) with no logic, so the tests compile and then fail with 404s.
 
 ### 6b: Make them pass
 
-- [ ] `Dtos/`: `CreateTaskRequest`, `UpdateTaskRequest`, `TaskResponse`, `PagedResponse<T>` as `record`s. Put `[Required]` and `[MaxLength]` on the request properties.
-- [ ] `Services/ITaskService.cs`, with `CreateAsync` and `GetByIdAsync` for now. `GetByIdAsync` returns `Task<TaskResponse?>` (null = not found).
-- [ ] `Services/TaskService.cs`: injects `AppDbContext`. `CreateAsync` sets `Id`, both timestamps (`DateTime.UtcNow`), and defaults `Status` to `Pending`; it then adds the task, saves, and maps it to `TaskResponse`.
-- [ ] Register it: `builder.Services.AddScoped<ITaskService, TaskService>();`
-- [ ] `Controllers/TasksController.cs`: `[ApiController]`, `[Route("api/tasks")]`, injects `ITaskService`. Add `Create` (POST) and `GetById` (GET `{id:guid}`).
-- [ ] `dotnet test`: all green.
-- [ ] Try it in Swagger: create a task, then get it by ID.
-- [ ] Commit: `feat: create and get task endpoints`
+- [x] `Dtos/`: `CreateTaskRequest`, `UpdateTaskRequest`, `TaskResponse`, `PagedResponse<T>` as `record`s. Put `[Required]` and `[MaxLength]` on the request properties.
+- [x] `Services/ITaskService.cs`, with `CreateAsync` and `GetByIdAsync` for now. `GetByIdAsync` returns `Task<TaskResponse?>` (null = not found).
+- [x] `Services/TaskService.cs`: injects `AppDbContext`. `CreateAsync` sets `Id`, both timestamps (`DateTime.UtcNow`), and defaults `Status` to `Pending`; it then adds the task, saves, and maps it to `TaskResponse`.
+- [x] Register it: `builder.Services.AddScoped<ITaskService, TaskService>();`
+- [x] `Controllers/TasksController.cs`: `[ApiController]`, `[Route("api/tasks")]`, injects `ITaskService`. Add `Create` (POST) and `GetById` (GET `{id:guid}`).
+- [x] `dotnet test`: all green.
+- [x] Try it in Swagger: create a task, then get it by ID.
+- [x] Commit: `feat: create and get task endpoints`
 
 <details><summary>Hint: positional record with validation attributes</summary>
 
@@ -373,12 +373,12 @@ var body = await response.Content.ReadFromJsonAsync<TaskResponse>(TestJson.Optio
 
 ### 7a: Query parameters class (unit-tested)
 
-- [ ] **Unit tests first,** in `Unit/TaskQueryParametersTests.cs` (no collection, no database). Use `Validator.TryValidateObject(obj, new ValidationContext(obj), results, validateAllProperties: true)`:
-  - [ ] `Defaults_are_page_1_and_size_20`
-  - [ ] `Page_0_is_invalid`
-  - [ ] `PageSize_0_is_invalid`
-  - [ ] `PageSize_101_is_invalid`
-  - [ ] `PageSize_100_is_valid`
+- [x] **Unit tests first,** in `Unit/TaskQueryParametersTests.cs` (no collection, no database). Use `Validator.TryValidateObject(obj, new ValidationContext(obj), results, validateAllProperties: true)`:
+  - [x] `Defaults_are_page_1_and_size_20`
+  - [x] `Page_0_is_invalid`
+  - [x] `PageSize_0_is_invalid`
+  - [x] `PageSize_101_is_invalid`
+  - [x] `PageSize_100_is_valid`
 - [ ] Implement `Dtos/TaskQueryParameters.cs`: a class with `TaskItemStatus? Status`, `int Page = 1` with `[Range(1, int.MaxValue)]`, and `int PageSize = 20` with `[Range(1, 100)]`, using `{ get; init; }` properties.
 - [ ] Unit tests green.
 
