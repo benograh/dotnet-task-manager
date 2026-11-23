@@ -71,11 +71,11 @@ tests/TaskManager.Api.Tests/
 
 ## Task 0: Tooling and branch
 
-- [ ] Create a branch: `git checkout -b stage1-task-crud`
-- [ ] Install the EF Core CLI (like the Flyway/Liquibase CLI): `dotnet tool install --global dotnet-ef --version 10.0.15`
+- [x] Create a branch: `git checkout -b stage1-task-crud`
+- [x] Install the EF Core CLI (like the Flyway/Liquibase CLI): `dotnet tool install --global dotnet-ef --version 10.0.15`
   > **Version pinning:** .NET 11 / EF Core 11 are out, so an unpinned `dotnet add package` or `dotnet tool install` picks 11.x, which requires `net11.0`. This project targets `net10.0`, so every Microsoft/EF package below is pinned to a 10.x version. The major version must match your `<TargetFramework>`.
-- [ ] Verify: `dotnet ef --version` prints `10.x`. If the command isn't found, open a new terminal so PATH refreshes.
-- [ ] Make sure Docker Desktop is running: `docker ps` should print a table header rather than an error.
+- [x] Verify: `dotnet ef --version` prints `10.x`. If the command isn't found, open a new terminal so PATH refreshes.
+- [x] Make sure Docker Desktop is running: `docker ps` should print a table header rather than an error.
 
 **Done when:** `dotnet ef --version` and `docker ps` both work.
 
@@ -85,7 +85,7 @@ tests/TaskManager.Api.Tests/
 
 **Concepts:** A **solution** (`.slnx`, the new XML solution format and the default in .NET 10) groups projects, like a Maven multi-module parent POM. Each **project** (`.csproj`) is one buildable unit, like a module's `pom.xml`. NuGet is Maven Central.
 
-- [ ] From the repo root:
+- [x] From the repo root:
   ```bash
   dotnet new sln -n TaskManager
   dotnet new webapi -n TaskManager.Api -o src/TaskManager.Api --use-controllers
@@ -93,12 +93,12 @@ tests/TaskManager.Api.Tests/
   dotnet sln add src/TaskManager.Api tests/TaskManager.Api.Tests
   dotnet add tests/TaskManager.Api.Tests reference src/TaskManager.Api
   ```
-- [ ] Open `tests/TaskManager.Api.Tests/TaskManager.Api.Tests.csproj` and note whether the package is `xunit` (v2) or `xunit.v3`. Tell Claude which one you have; the hints below assume **v2**.
-- [ ] Explore what the template generated: `Program.cs`, `Controllers/WeatherForecastController.cs`, `WeatherForecast.cs`, `appsettings.json`, `Properties/launchSettings.json`. Read `Program.cs` line by line. It's the equivalent of your `@SpringBootApplication` class plus all your `@Configuration` beans.
-- [ ] Run it: `dotnet run --project src/TaskManager.Api`, then open the `http://localhost:<port>/weatherforecast` URL printed in the console.
-- [ ] Delete `WeatherForecastController.cs`, `WeatherForecast.cs`, the template's `UnitTest1.cs`, and the `.http` file.
-- [ ] `dotnet build` succeeds with 0 errors.
-- [ ] Commit: `git add -A && git commit -m "chore: scaffold solution, API and test projects"`
+- [x] Open `tests/TaskManager.Api.Tests/TaskManager.Api.Tests.csproj` and note whether the package is `xunit` (v2) or `xunit.v3`. Tell Claude which one you have; the hints below assume **v2**.
+- [x] Explore what the template generated: `Program.cs`, `Controllers/WeatherForecastController.cs`, `WeatherForecast.cs`, `appsettings.json`, `Properties/launchSettings.json`. Read `Program.cs` line by line. It's the equivalent of your `@SpringBootApplication` class plus all your `@Configuration` beans.
+- [x] Run it: `dotnet run --project src/TaskManager.Api`, then open the `http://localhost:<port>/weatherforecast` URL printed in the console.
+- [x] Delete `WeatherForecastController.cs`, `WeatherForecast.cs`, the template's `UnitTest1.cs`, and the `.http` file.
+- [x] `dotnet build` succeeds with 0 errors.
+- [x] Commit: `git add -A && git commit -m "chore: scaffold solution, API and test projects"`
 
 **Done when:** `dotnet build` is green and the template sample code is gone.
 
@@ -108,9 +108,9 @@ tests/TaskManager.Api.Tests/
 
 **Concepts:** `appsettings.json` ≈ `application.yml`; `appsettings.Development.json` ≈ `application-dev.yml`. The environment comes from `ASPNETCORE_ENVIRONMENT`, which `launchSettings.json` sets to `Development` for `dotnet run`. `builder.Configuration.GetConnectionString("Default")` reads `ConnectionStrings:Default`.
 
-- [ ] Create `docker-compose.yml` at the repo root: service `postgres`, image `postgres:17-alpine`, port `5432:5432`, database/user/password all `taskmanager`, and a named volume for the data.
-- [ ] `docker compose up -d`, then `docker compose ps` shows it running.
-- [ ] Add a `ConnectionStrings` section with a `Default` entry to `appsettings.Development.json`.
+- [x] Create `docker-compose.yml` at the repo root: service `postgres`, image `postgres:17-alpine`, port `5432:5432`, database/user/password all `taskmanager`, and a named volume for the data.
+- [x] `docker compose up -d`, then `docker compose ps` shows it running.
+- [x] Add a `ConnectionStrings` section with a `Default` entry to `appsettings.Development.json`.
 
 <details><summary>Hint: docker-compose.yml shape</summary>
 
@@ -136,7 +136,7 @@ volumes:
 `Host=localhost;Port=5432;Database=taskmanager;Username=taskmanager;Password=taskmanager`
 </details>
 
-- [ ] Commit: `feat: add postgres via docker compose`
+- [x] Commit: `feat: add postgres via docker compose`
 
 **Done when:** the container is running and the connection string is in the Development config.
 
@@ -154,20 +154,20 @@ Read: [EF Core getting started](https://learn.microsoft.com/ef/core/get-started/
   dotnet add src/TaskManager.Api package Microsoft.EntityFrameworkCore.Design --version 10.0.15
   ```
   Check in the `.csproj` that both resolved to a `10.x` version.
-- [ ] Create `Entities/TaskItemStatus.cs`: enum with `Pending`, `InProgress`, `Completed`.
-- [ ] Create `Entities/TaskItem.cs` with the properties from the spec's Data Model table.
-- [ ] Create `Data/AppDbContext.cs`:
+- [x] Create `Entities/TaskItemStatus.cs`: enum with `Pending`, `InProgress`, `Completed`.
+- [x] Create `Entities/TaskItem.cs` with the properties from the spec's Data Model table.
+- [x] Create `Data/AppDbContext.cs`:
   - Takes `DbContextOptions<AppDbContext>` in its constructor and passes it to the base class.
   - Exposes `DbSet<TaskItem> Tasks`.
   - In `OnModelCreating`: `Title` is required with max length 200; `Description` has max length 2000; `Status` is stored as a string (`HasConversion<string>()`) with a max length of 20.
-- [ ] Register it in `Program.cs` with `builder.Services.AddDbContext<AppDbContext>(...)` using `UseNpgsql` and the `Default` connection string.
-- [ ] Create the migration and apply it:
+- [x] Register it in `Program.cs` with `builder.Services.AddDbContext<AppDbContext>(...)` using `UseNpgsql` and the `Default` connection string.
+- [x] Create the migration and apply it:
   ```bash
   dotnet ef migrations add InitialCreate --project src/TaskManager.Api --output-dir Data/Migrations
   dotnet ef database update --project src/TaskManager.Api
   ```
-- [ ] **Read the generated migration file.** Check that `Status` is a `text`/`character varying(20)` column and `CreatedAt` is `timestamp with time zone`.
-- [ ] Inspect the table: `docker compose exec postgres psql -U taskmanager -c '\d "Tasks"'`
+- [x] **Read the generated migration file.** Check that `Status` is a `text`/`character varying(20)` column and `CreatedAt` is `timestamp with time zone`.
+- [x] Inspect the table: `docker compose exec postgres psql -U taskmanager -c '\d "Tasks"'`
 - [ ] Commit: `feat: add TaskItem entity, AppDbContext and initial migration`
 
 <details><summary>Hint: DbContext constructor (primary constructor syntax, C# 12+)</summary>
