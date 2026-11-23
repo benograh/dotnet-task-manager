@@ -72,7 +72,8 @@ tests/TaskManager.Api.Tests/
 ## Task 0: Tooling and branch
 
 - [ ] Create a branch: `git checkout -b stage1-task-crud`
-- [ ] Install the EF Core CLI (like the Flyway/Liquibase CLI): `dotnet tool install --global dotnet-ef`
+- [ ] Install the EF Core CLI (like the Flyway/Liquibase CLI): `dotnet tool install --global dotnet-ef --version 10.0.15`
+  > **Version pinning:** .NET 11 / EF Core 11 are out, so an unpinned `dotnet add package` or `dotnet tool install` picks 11.x, which requires `net11.0`. This project targets `net10.0`, so every Microsoft/EF package below is pinned to a 10.x version. The major version must match your `<TargetFramework>`.
 - [ ] Verify: `dotnet ef --version` prints `10.x`. If the command isn't found, open a new terminal so PATH refreshes.
 - [ ] Make sure Docker Desktop is running: `docker ps` should print a table header rather than an error.
 
@@ -149,8 +150,8 @@ Read: [EF Core getting started](https://learn.microsoft.com/ef/core/get-started/
 
 - [ ] Add packages to the API project:
   ```bash
-  dotnet add src/TaskManager.Api package Npgsql.EntityFrameworkCore.PostgreSQL
-  dotnet add src/TaskManager.Api package Microsoft.EntityFrameworkCore.Design
+  dotnet add src/TaskManager.Api package Npgsql.EntityFrameworkCore.PostgreSQL --version 10.0.4
+  dotnet add src/TaskManager.Api package Microsoft.EntityFrameworkCore.Design --version 10.0.15
   ```
   Check in the `.csproj` that both resolved to a `10.x` version.
 - [ ] Create `Entities/TaskItemStatus.cs`: enum with `Pending`, `InProgress`, `Completed`.
@@ -229,7 +230,7 @@ Read: [Integration tests in ASP.NET Core](https://learn.microsoft.com/aspnet/cor
 
 - [ ] Add packages to the test project:
   ```bash
-  dotnet add tests/TaskManager.Api.Tests package Microsoft.AspNetCore.Mvc.Testing
+  dotnet add tests/TaskManager.Api.Tests package Microsoft.AspNetCore.Mvc.Testing --version 10.0.15
   dotnet add tests/TaskManager.Api.Tests package Testcontainers.PostgreSql
   ```
 - [ ] `Infrastructure/TaskManagerApiFactory.cs`: a class that extends `WebApplicationFactory<Program>` and implements xUnit's `IAsyncLifetime`. It:
